@@ -1,0 +1,39 @@
+# We have used codes from Chandrashekar et al. (2021) replication study
+# Our data set is in brazilian portuguese, so we'll provide here a description for each variable
+# Also, we provide a comparison between our variable names and the ones used by Chandrashekar et al. (2021)
+
+#### On the left, the variables used by Chandrashekar et al. (2021)
+#### On the right, the equivalent variables used in our data set and our codes
+#### There are two variables for: 8 biases, 3 personal shortcomings and two means. Each one is measured for "self" and "other"
+#### HKUS stands for "Hong Kong University" (sample used for Chandrashekar et al. (2021) study)
+
+# 1. Self_SSS, HKUS_SSS   =   self_ego, other_ego
+# 2. Self_SIB, HKUS_SIB   =   self_IP , other_IP
+# 3. Self_RD, HKUS_RD     =   self_DRP, other_DRP
+# 4. Self_FAE, HKUS_FAE   =   self_AEC, other_AEC  
+# 5. Self_HME, HKUS_HME   =   self_midia, other_midia
+# 6. Self_PHE, HKUS_PHE   =   self_halo, other_halo
+# 7. Self_AS, HKUS_AS     =   self_desc, other_desc
+# 8. Self_DR, HKUS_DR     =   self_rac, other_rac
+# A. Self_Proc, HKUS_Proc =   SELF_proc, OTHER_proc
+# B. Self_FPS, HKUS_FPS   =   SELF_RF, OTHER_RF
+# C. Self_PF, HKUS_PF     =   SELF_PO, OTHER_PO
+# M1. BS_Mean, BO_Mean    =   BS_Mean, BO_Mean
+# M2. PSS_Mean, PSO_Mean  =   PSS_Mean, PSO_Mean
+
+#### On the left, variable names (we opted to use the same names provided in the code)
+#### On the right, definitions (Pronin et al., 2002)
+
+# 1. selfserv             =   self-serving attributions for success versus failure (translated as "egocentric" in the portuguese survey) 
+# 2. selfint              =   judgments about the “greater good” influenced by personal self-interest  
+# 3. reactideval          =   reactive devaluation of proposals from one’s negotiation counterparts
+# 4. FAE                  =   the fundamental attribution error (FAE) in “blaming the victim”
+# 5. hostmed              =   perceptions of hostile media bias toward one’s group or cause
+# 6. Halo                 =   the positive halo effect
+# 7. biassim              =   biased assimilation of new information
+# 8. cogdis               =   dissonance reduction after free choice
+# A. procrast             =   procrastination
+# B. FPS                  =   fear of public speaking
+# C. Planfall             =   planning fallacy
+# M1. avg.bias8           =   mean of 8 biaes
+# M2. avg.pershort        =   mean personal shortcomings
