@@ -90,4 +90,123 @@ flextable::save_as_docx(path =
 ###         3. HYPOTHESIS TEST          ###
 ###########################################
 
-# The following codes were obtained 
+# The following codes were obtained from the work of Chandrashekar et al., (2021). Their osf project is 
+# https://osf.io/3df5s/ 
+# Minor adaptation were made to fit our data
+# Variable description are available in the README file
+
+#    3.1. Calculate The mean scores
+
+Data$BS_Mean <- rowMeans(Data[,
+                       c("self_ego",
+                         "self_IP",
+                         "self_DRP",
+                         "self_AEC",
+                         "self_midia",
+                         "self_halo",
+                         "self_desc",
+                         "self_rac")],na.rm=TRUE)
+
+Data$PSS_Mean <- rowMeans(Data[,
+                         c("SELF_proc",
+                           "SELF_RF",
+                           "SELF_PO")],na.rm=TRUE)
+
+Data$BO_Mean <- rowMeans(Data[,
+                       c("other_ego",
+                         "other_IP",
+                         "other_DRP",
+                         "other_AEC",
+                         "other_midia",
+                         "other_halo",
+                         "other_desc",
+                         "other_rac")],na.rm=TRUE)
+  
+
+Data$PSO_Mean <- rowMeans(Data[,
+                        c("OTHER_proc",
+                          "OTHER_RF",
+                          "OTHER_PO")],na.rm=TRUE)
+
+# Difference tests (Compare the self-other discrepancy of biases to that of personal shortcomings.)
+# calculate diff variables
+
+Data$biasdiff = Data$BS_Mean  -  Data$BO_Mean
+Data$opsdiff  = Data$PSS_Mean - Data$PSO_Mean
+Data$diffdiff = Data$biasdiff - Data$opsdiff
+
+utils::View(Data)
+
+#     3.2. Contrasting self vs others for biases, personal shortcomings; 
+#     Contrast of difference in differences
+# calculate descriptives for age of participants
+
+psych::describe (subset(Data,select=c
+                        ("Age",
+                          "BS_Mean",
+                          "BO_Mean",
+                          "PSS_Mean",
+                          "PSO_Mean",
+                          "biasdiff",
+                          "opsdiff",
+                          "diffdiff")))
+
+# CORRELATION COEFFICIENT
+bias <- cor(Data$BS_Mean, Data$BO_Mean)
+ps <- cor(Data$PSS_Mean, Data$PSO_Mean)
+diff <- cor(Data$biasdiff, Data$opsdiff)
+
+print(bias)
+print(ps)
+print(diff)
+
+## asymmetry of bias between self and others
+ttest1 <- t.test (Data$BS_Mean, Data$BO_Mean, 
+                  alternative = "less",
+                  paired = T,
+                  var.equal = FALSE,
+                  conf.level = 0.95)
+print(ttest1)
+
+#cohen's d
+T1d <- effsize::cohen.d(Data$BS_Mean, Data$BO_Mean,
+                        pooled=TRUE,
+                        paired=TRUE,
+                        na.rm=TRUE, 
+                        conf.level=0.95,
+                        noncentral=TRUE)
+print(T1d)
+
+
+## asymmetry of Personal shortcomings between self and others
+ttest2 <- t.test(Data$PSS_Mean, Data$PSO_Mean, 
+                 paired = T, 
+                 var.equal = FALSE, 
+                 conf.level = 0.95)
+print(ttest2)
+
+#cohen's d
+T2d <- effsize::cohen.d(Data$PSS_Mean, Data$PSO_Mean,
+                        pooled=TRUE,
+                        paired=TRUE,
+                        na.rm=TRUE, 
+                        conf.level=0.95,
+                        noncentral=TRUE)
+print(T2d)
+
+
+##contrast between difference in self-other bias and difference in self-other shortcomings
+ttest3 <-  t.test(Data$biasdiff, Data$opsdiff,
+                  paired = T,
+                  var.equal = FALSE, 
+                  conf.level = 0.95)
+print(ttest3)
+
+#cohen's d
+T3d <- effsize::cohen.d(Data$biasdiff, Data$opsdiff,
+                        pooled=TRUE,
+                        paired=TRUE,
+                        na.rm=TRUE, 
+                        conf.level=0.95,
+                        noncentral=TRUE)
+print(T3d)
