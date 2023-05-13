@@ -18,30 +18,31 @@
 ###         2. DESCRIPTIVES             ###
 ###########################################
 
-# Some variables must be recoded
+# # # # 2.1. re-coding variables # # # # #
 {
-# Sex 
-{
- Data$Sex[Data$Sex == "1"] <- "Male"
- Data$Sex[Data$Sex == "2"] <- "Female"
- Data$Sex[Data$Sex == "3"] <- "Other"
 
- Data$Sex_Other[Data$Sex_Other == "não binário"] <- "non-binary"
+  # Sex 
+  {
+   Data$Sex[Data$Sex == "1"] <- "Male"
+   Data$Sex[Data$Sex == "2"] <- "Female"
+   Data$Sex[Data$Sex == "3"] <- "Other"
 
-}
-# Education 
-{
- Data$Education[Data$Education == "1"] <- "Primary Education (unfinished)"
- Data$Education[Data$Education == "2"] <- "Primary Education (finished)"
- Data$Education[Data$Education == "3"] <- "Secondary Education (unfinished)"
- Data$Education[Data$Education == "4"] <- "Secondary Education (finished)"
- Data$Education[Data$Education == "5"] <- "Undergraduation (unfinished)"
- Data$Education[Data$Education == "6"] <- "Undergraduation (finished)"
- Data$Education[Data$Education == "7"] <- "Graduation (unfinished)"
- Data$Education[Data$Education == "8"] <- "Graduation (finished)"
-}
-# Family income
-{
+   Data$Sex_Other[Data$Sex_Other == "não binário"] <- "non-binary"
+   }
+ 
+  # Education 
+  {
+   Data$Education[Data$Education == "1"] <- "Primary Education (unfinished)"
+   Data$Education[Data$Education == "2"] <- "Primary Education (finished)"
+   Data$Education[Data$Education == "3"] <- "Secondary Education (unfinished)"
+   Data$Education[Data$Education == "4"] <- "Secondary Education (finished)"
+   Data$Education[Data$Education == "5"] <- "Undergraduation (unfinished)"
+   Data$Education[Data$Education == "6"] <- "Undergraduation (finished)"
+   Data$Education[Data$Education == "7"] <- "Graduation (unfinished)"
+   Data$Education[Data$Education == "8"] <- "Graduation (finished)"
+   }
+ # Family income
+ {
   Data$Family_Income[Data$Family_Income == "1"] <- "None"
   Data$Family_Income[Data$Family_Income == "2"] <- "Up to 1 minimum wage (R$ 1,045)"
   Data$Family_Income[Data$Family_Income == "3"] <- "From 1 to 3 minimum wages (R$ 1,045.01 to R$ 3,135.00)"
@@ -50,10 +51,9 @@
   Data$Family_Income[Data$Family_Income == "6"] <- "From 9 to 12 minimum wages (R$ 9,405.01 to R$ 12,540.00)"
   Data$Family_Income[Data$Family_Income == "7"] <- "From 12 to 15 minimum wages (R$ 12,540.01 to R$ 15,675.00)"
   Data$Family_Income[Data$Family_Income == "8"] <- "More than 15 minimum wages (more than R$ 15,675.01)"
-  
-}
-# Area
-{
+  }
+ # Area
+ {
   Data$Area[Data$Area == "1"] <- "Mathematics"
   Data$Area[Data$Area == "2"] <- "Human Sciences"
   Data$Area[Data$Area == "3"] <- "Biological Sciences"
@@ -61,10 +61,26 @@
   Data$Area[Data$Area == "5"] <- "Arts"
   Data$Area[Data$Area == "6"] <- "Not enrolled"
   }
+
 View(Data)
 }
 
-{
+# # # # 2.2. Descriptive analysis # # # # #
+
+{require(magrittr)
+ require(report)
+ require(gtsummary)
+ require(flextable)}
+
+summary(Data$Age)          # Age
+report(Data$Age)           # Age
+report(Data$Sex)           # Sex
+report(Data$Education)     # Education
+report(Data$Area)          # Area of knowledge
+report(Data$Family_Income) # Family income
+summary (Data$Ppl_FI)      # How many people live with that income
+report(Data$Ppl_FI)        # How many people live with that income
+
 
 # Table with demographic variables
 
@@ -78,8 +94,9 @@ demographics_table <- Data %>%
                              list(all_continuous() ~ "{mean} ({sd})"))
 
 print(demographics_table)
-}
+
 # Saving demographics on a .docx
+
 demographics_table %>% 
 gtsummary::as_flex_table() %>%
 flextable::save_as_docx(path =
