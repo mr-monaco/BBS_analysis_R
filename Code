@@ -705,3 +705,29 @@ s1avplot8 # Cognitive dissonance
 # This code will arrange all plots into one single file
 ggpubr::ggarrange(s1avplot1,	s1avplot2,	s1avplot3,	s1avplot4,	
 s1avplot5,	s1avplot6,	s1avplot7,	s1avplot8, ncol = 4, nrow = 2)
+
+# to cite the packages used: 
+print(citation('tidyverse'), bibtex=TRUE)
+'options(citation.bibtex.max=999)'
+print(citation('osfr'), bibtex=TRUE)
+'options(citation.bibtex.max=999)'
+print(citation('readxl'), bibtex=TRUE)
+'options(citation.bibtex.max=999)'
+print(citation('psych'), bibtex=TRUE)
+'options(citation.bibtex.max=999)'
+print(citation('report'), bibtex=TRUE)
+'options(citation.bibtex.max=999)'
+print(citation('effsize'), bibtex=TRUE)
+'options(citation.bibtex.max=999)'
+print(citation('jmv'), bibtex=TRUE)
+'options(citation.bibtex.max=999)'
+print(citation('reshape2'), bibtex=TRUE)
+'options(citation.bibtex.max=999)'
+print(citation('Rmisc'), bibtex=TRUE)
+'options(citation.bibtex.max=999)'
+print(citation('ggstatsplot'), bibtex=TRUE)
+'options(citation.bibtex.max=999)'
+print(citation('ggplot2'), bibtex=TRUE)
+'options(citation.bibtex.max=999)'
+print(citation('ggpubr'), bibtex=TRUE)
+'options(citation.bibtex.max=999)'
