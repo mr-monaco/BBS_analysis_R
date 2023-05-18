@@ -1,3 +1,17 @@
+# # # Packages used # # #
+install.packages('tidyverse')
+install.packages('osfr')
+install.packages('readxl')
+install.packages('psych')
+install.packages('report')
+install.packages('effsize')
+install.packages('jmv')
+install.packages('reshape2')
+install.packages('Rmisc')
+install.packages('ggstatsplot')
+install.packages("ggplot2")
+install.packages('ggpubr')
+
 ###########################################
 ###       1. OPENING THE DATASET        ###
 ###########################################
@@ -167,7 +181,7 @@ psych::describe (subset(Data,select=c
                           "opsdiff",
                           "diffdiff")))
 
-# CORRELATION COEFFICIENT
+# Correlation Coefficient
 bias <- cor(Data$BS_Mean, Data$BO_Mean)
 ps <- cor(Data$PSS_Mean, Data$PSO_Mean)
 diff <- cor(Data$biasdiff, Data$opsdiff)
@@ -176,13 +190,13 @@ print(bias)
 print(ps)
 print(diff)
 
-## asymmetry of bias between self and others
+# # HYPOTHESIS 1: asymmetry of bias between self and others
 ttest1 <- t.test (Data$BS_Mean, Data$BO_Mean, 
                   alternative = "less",
                   paired = T,
                   var.equal = FALSE,
                   conf.level = 0.95)
-print(ttest1)
+
 
 #cohen's d
 T1d <- effsize::cohen.d(Data$BS_Mean, Data$BO_Mean,
@@ -191,15 +205,18 @@ T1d <- effsize::cohen.d(Data$BS_Mean, Data$BO_Mean,
                         na.rm=TRUE, 
                         conf.level=0.95,
                         noncentral=TRUE)
+
+# Results Hypothesis 1
+print(ttest1)
+report(ttest1)
 print(T1d)
 
 
-## asymmetry of Personal shortcomings between self and others
+# # HYPOTHESIS 2: asymmetry of Personal shortcomings between self and others
 ttest2 <- t.test(Data$PSS_Mean, Data$PSO_Mean, 
                  paired = T, 
                  var.equal = FALSE, 
                  conf.level = 0.95)
-print(ttest2)
 
 #cohen's d
 T2d <- effsize::cohen.d(Data$PSS_Mean, Data$PSO_Mean,
@@ -208,15 +225,18 @@ T2d <- effsize::cohen.d(Data$PSS_Mean, Data$PSO_Mean,
                         na.rm=TRUE, 
                         conf.level=0.95,
                         noncentral=TRUE)
+
+# Results Hypothesis 2
+print(ttest2)
+report(ttest2)
 print(T2d)
 
-
-## contrast between difference in self-other bias and difference in self-other shortcomings
+# # HYPOTHESIS 3: contrast between difference in self-other bias and difference in self-other shortcomings
 ttest3 <-  t.test(Data$biasdiff, Data$opsdiff,
                   paired = T,
                   var.equal = FALSE, 
                   conf.level = 0.95)
-print(ttest3)
+
 
 #cohen's d
 T3d <- effsize::cohen.d(Data$biasdiff, Data$opsdiff,
@@ -225,7 +245,13 @@ T3d <- effsize::cohen.d(Data$biasdiff, Data$opsdiff,
                         na.rm=TRUE, 
                         conf.level=0.95,
                         noncentral=TRUE)
+
+# Results Hypothesis 3
+print(ttest3)
+report(ttest3)
 print(T3d)
+
+
 
 ## Descriptive analysis of biases and personal shortcomings means (self and others)
 {desc_means <- jmv::descriptives(
@@ -268,7 +294,7 @@ print(T3d)
 ###               4. PLOTS              ###
 ###########################################    
 
-# # # # 4.1. For visualization convert the dataframe from wide form to long form # # # # #
+# # # # 4.1. For visualization, convert the dataframe from wide form to long form # # # # #
 
 long1sub <- subset(Data,select=c(  "self_ego",
                                    "self_IP",
@@ -365,4 +391,317 @@ long1v2$reference<- factor(long1v2$reference,
                            levels = c(1,2),
                            labels = c("Bias", "Personal shortcomings"))
 
+# # # # 4.2. Plots # # # # #
+{require(ggpubr)
+require(ggstatsplot)
+require(ggplot2)}
 
+# HYPOTHESIS 1: Self vs Other - comparison 8 biases plot
+
+{vplot1 <- ggstatsplot::ggbetweenstats(data = long1,
+  notch= TRUE,
+  mean.plotting = TRUE,      # whether mean for each group is to be displayed 
+  mean.ci = TRUE,            # whether to display confidence interval for means
+  mean.label.size = 2.5,     # size of the label for mean
+  plot.type = "boxviolin",
+  x = reference,
+  y = avg.bias8,
+  title = "Eight biases",
+  results.subtitle = FALSE,   # turn off the default subtitle
+  subtitle =  ,               # add the custom subtitle prepared using helper function
+  messages = FALSE,
+  sample.size.label= FALSE,
+  ylab= "Susceptibility to Biases",
+  xlab= "",
+  mean.color = "black") + 
+  ggplot2::theme(legend.position = "none", panel.background =
+                   element_blank(),
+                   panel.grid.major = 
+                   element_blank(), panel.grid.minor = 
+                   element_blank(),
+                   panel.border = 
+                   element_blank(), axis.line = 
+                   element_line()) + 
+  ggplot2::scale_color_manual(values = c("#999999", "#999999"))
+ vplot1}
+
+# HYPOTHESIS 2: Self vs Other - Personal Shortcomings comparison
+{vplot2 <-ggstatsplot::ggbetweenstats(data = long1,
+  notch= TRUE,
+  mean.plotting = TRUE,       # whether mean for each group is to be displayed 
+  mean.ci = TRUE,             # whether to display confidence interval for means
+  mean.label.size = 2.5,      # size of the label for mean
+  plot.type = "boxviolin",
+  x = reference,
+  y = avg.pershort,
+  title ="Personal Shortcomings" ,
+  results.subtitle = FALSE,    # turn off the default subtitle
+  subtitle =  ,                # add the custom subtitle prepared using helper function
+  messages = FALSE,
+  sample.size.label= FALSE,
+  ylab= "Perceived personal shortcomings",
+  xlab= "",
+  mean.color = "black") + 
+  ggplot2::theme(legend.position = "none", panel.background = 
+                   element_blank(),
+                   panel.grid.major = 
+                   element_blank(), panel.grid.minor = 
+                   element_blank(),
+                   panel.border = 
+                   element_blank(), axis.line = 
+                   element_line()) +
+  ggplot2::scale_color_manual(values = c("#999999", "#999999"))
+vplot2}
+
+# HYPOTHESIS 3: comparison between asymmetry of biases asymmetry personal shortcomings.
+{vplot3 <- ggstatsplot::ggbetweenstats(
+  data = long1v2,
+  notch= TRUE,
+  mean.plotting = TRUE,       # whether mean for each group is to be displayed 
+  mean.ci = TRUE,             # whether to display confidence interval for means
+  mean.label.size = 2.5,      # size of the label for mean
+  plot.type = "boxviolin",
+  x = reference,
+  y = diffdiff,
+  title = "Asymmetry",
+  results.subtitle = FALSE,   # turn off the default subtitle
+  subtitle =  ,               # add the custom subtitle prepared using helper function
+  messages = FALSE,
+  sample.size.label= FALSE,
+  ylab= "Extent of Asymmetry",
+  xlab= "",
+  mean.color = "black") + 
+  ggplot2::theme(legend.position = "none", panel.background = 
+                 element_blank(),
+                   panel.grid.major = 
+                   element_blank(), panel.grid.minor = 
+                   element_blank(),
+                   panel.border = 
+                   element_blank(), axis.line = 
+                   element_line()) +
+   ggplot2::scale_color_manual(values = c("#999999", "#999999"))
+vplot3}
+
+# This line will plot all three in the same page
+ggpubr::ggarrange(vplot1, vplot2, vplot3, ncol = 3, nrow = 1)
+
+# Barplot for the biases
+{barplot1 <- ggplot (means, aes (x=variable, y=value, fill= factor(reference)))+
+             geom_bar (stat="identity", position="dodge")+
+             scale_fill_discrete (name="reference")+ 
+             geom_errorbar (aes(ymin = value-se,
+                                ymax = value+se),
+                                width = .2,
+                                position = position_dodge (.9))+ 
+                                xlab ("") +
+                                ylab ("Perceived susceptibility") + 
+                                coord_cartesian (ylim=c(3,7)) + 
+                                guides (fill = guide_legend (title = NULL))+
+            theme (axis.text.x = element_text (angle = 90, hjust = 1, size=14, face="bold"),
+                  axis.title.y = element_text (size=14,face="bold"))+
+            theme (legend.text = element_text (size=14)) 
+
+barplot1 + scale_x_discrete (labels = c("Self-serving",
+                                       "Self-interest",
+                                       "Reactive devaluation",
+                                       "FAE","Hostile media",
+                                       "Halo effect",
+                                       "Assimilation Bias",
+                                       "Cognitive dissonance",
+                                       "8 biases (Average)",
+                                       "Shortcomings (average)"))}
+                                       
+# Violin plot for each bias
+
+s1avplot1 <- ggstatsplot::ggbetweenstats(
+  data = long1,
+  notch= TRUE,
+  mean.plotting = TRUE,                           # whether mean for each group is to be displayed 
+  mean.ci = TRUE,                                 # whether to display confidence interval for means
+  mean.label.size = 2.5,                          # size of the label for mean
+  plot.type = "boxviolin",
+  x = reference,
+  y = selfserv,
+  title = ,
+  results.subtitle = FALSE,    # turn off the default subtitle
+  subtitle =  ,                # add the custom subtitle prepared using helper function
+  messages = FALSE,
+  sample.size.label= FALSE,
+  ylab= "Self serving bias",
+  xlab= "",
+  mean.color = "black") + 
+  ggplot2::theme(legend.position = "none", panel.background = element_blank(),
+                 panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                 panel.border = element_blank(), axis.line = element_line()) +
+   ggplot2::scale_color_manual(values = c("#999999", "#999999"))
+
+
+s1avplot2 <-ggstatsplot::ggbetweenstats(
+  data = long1,
+  notch= TRUE,
+  mean.plotting = TRUE,                           # whether mean for each group is to be displayed 
+  mean.ci = TRUE,                                 # whether to display confidence interval for means
+  mean.label.size = 2.5,                          # size of the label for mean
+  plot.type = "boxviolin",
+  x = reference,
+  y = selfint,
+  title = ,
+  results.subtitle = FALSE,           # turn off the default subtitle
+  subtitle =  ,                       # add the custom subtitle prepared using helper function
+  messages = FALSE,
+  sample.size.label= FALSE,
+  ylab= "Self-interest bias",
+  xlab= "",
+  mean.color = "black") + 
+  ggplot2::theme(legend.position = "none", panel.background = element_blank(),
+                 panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                 panel.border = element_blank(), axis.line = element_line()) +
+   ggplot2::scale_color_manual(values = c("#999999", "#999999")) 
+
+s1avplot03 <-ggstatsplot::ggbetweenstats(
+  data = long1,
+  notch= TRUE,
+  mean.plotting = TRUE,                           # whether mean for each group is to be displayed 
+  mean.ci = TRUE,                                 # whether to display confidence interval for means
+  mean.label.size = 2.5,                          # size of the label for mean
+  plot.type = "boxviolin",
+  x = reference,
+  y = reactideval,
+  title = ,
+  results.subtitle = FALSE,           # turn off the default subtitle
+  subtitle =  ,        # add the custom subtitle prepared using helper function
+  messages = FALSE,
+  sample.size.label= FALSE,
+  ylab= "Reactive devaluation bias",
+  xlab= "",
+  mean.color = "black") + 
+  ggplot2::theme(legend.position = "none", panel.background = element_blank(),
+                 panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                 panel.border = element_blank(), axis.line = element_line()) +
+   ggplot2::scale_color_manual(values = c("#999999", "#999999"))
+
+s1avplot4 <-ggstatsplot::ggbetweenstats(
+  data = long1,
+  notch= TRUE,
+  mean.plotting = TRUE,                           # whether mean for each group is to be displayed 
+  mean.ci = TRUE,                                 # whether to display confidence interval for means
+  mean.label.size = 2.5,                          # size of the label for mean
+  plot.type = "boxviolin",
+  x = reference,
+  y = FAE,
+  title = ,
+  results.subtitle = FALSE,           # turn off the default subtitle
+  subtitle =  ,        # add the custom subtitle prepared using helper function
+  messages = FALSE,
+  sample.size.label= FALSE,
+  ylab= "Fundamental attribution error",
+  xlab= "",
+  mean.color = "black") + 
+  ggplot2::theme(legend.position = "none", panel.background = element_blank(),
+                 panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                 panel.border = element_blank(), axis.line = element_line()) +
+  ggplot2::scale_color_manual(values = c("#999999", "#999999"))
+
+
+s1avplot5 <- ggstatsplot::ggbetweenstats(
+  data = long1,
+  notch= TRUE,
+  mean.plotting = TRUE,                           # whether mean for each group is to be displayed 
+  mean.ci = TRUE,                                 # whether to display confidence interval for means
+  mean.label.size = 2.5,                          # size of the label for mean
+  plot.type = "boxviolin",
+  x = reference,
+  y = hostmed,
+  title = ,
+  results.subtitle = FALSE,           # turn off the default subtitle
+  subtitle =  ,        # add the custom subtitle prepared using helper function
+  messages = FALSE,
+  sample.size.label= FALSE,
+  ylab= "Hostile media",
+  xlab= "",
+  mean.color = "black") + 
+  ggplot2::theme(legend.position = "none", panel.background = element_blank(),
+                 panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                 panel.border = element_blank(), axis.line = element_line()) +
+  ggplot2::scale_color_manual(values = c("#999999", "#999999"))
+
+
+s1avplot6 <- ggstatsplot::ggbetweenstats(
+  data = long1,
+  notch= TRUE,
+  mean.plotting = TRUE,                           # whether mean for each group is to be displayed 
+  mean.ci = TRUE,                                 # whether to display confidence interval for means
+  mean.label.size = 2.5,                          # size of the label for mean
+  plot.type = "boxviolin",
+  x = reference,
+  y = Halo,
+  title = ,
+  results.subtitle = FALSE,           # turn off the default subtitle
+  subtitle =  ,        # add the custom subtitle prepared using helper function
+  messages = FALSE,
+  sample.size.label= FALSE,
+  ylab= "Halo effect",
+  xlab= "",
+  mean.color = "black") + 
+  ggplot2::theme(legend.position = "none", panel.background = element_blank(),
+                 panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                 panel.border = element_blank(), axis.line = element_line()) +
+  ggplot2::scale_color_manual(values = c("#999999", "#999999"))
+
+s1avplot7 <- ggstatsplot::ggbetweenstats(
+  data = long1,
+  notch= TRUE,
+  mean.plotting = TRUE,                           # whether mean for each group is to be displayed 
+  mean.ci = TRUE,                                 # whether to display confidence interval for means
+  mean.label.size = 2.5,                          # size of the label for mean
+  plot.type = "boxviolin",
+  x = reference,
+  y = biassim,
+  title = ,
+  results.subtitle = FALSE,           # turn off the default subtitle
+  subtitle =  ,        # add the custom subtitle prepared using helper function
+  messages = FALSE,
+  sample.size.label= FALSE,
+  ylab= "Assimilation Bias",
+  xlab= "",
+  mean.color = "black") + 
+  ggplot2::theme(legend.position = "none", panel.background = element_blank(),
+                 panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                 panel.border = element_blank(), axis.line = element_line()) +
+  ggplot2::scale_color_manual(values = c("#999999", "#999999"))
+
+s1avplot8 <- ggstatsplot::ggbetweenstats(
+  data = long1,
+  notch= TRUE,
+  mean.plotting = TRUE,                           # whether mean for each group is to be displayed 
+  mean.ci = TRUE,                                 # whether to display confidence interval for means
+  mean.label.size = 2.5,                          # size of the label for mean
+  plot.type = "boxviolin",
+  x = reference,
+  y = cogdis,
+  title = ,
+  results.subtitle = FALSE,           # turn off the default subtitle
+  subtitle =  ,        # add the custom subtitle prepared using helper function
+  messages = FALSE,
+  sample.size.label= FALSE,
+  ylab= "Cognitive dissonance",
+  xlab= "",
+  mean.color = "black") + 
+  ggplot2::theme(legend.position = "none", panel.background = element_blank(),
+                 panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                 panel.border = element_blank(), axis.line = element_line()) +
+   ggplot2::scale_color_manual(values = c("#999999", "#999999")) 
+
+
+s1avplot1 # Self serving bias
+s1avplot2 # Self-interest bias
+s1avplot3 # Reactive devaluation bias
+s1avplot4 # Fundamental attribution error
+s1avplot5 # Hostile media
+s1avplot6 # Halo effect
+s1avplot7 # Assimilation Bias
+s1avplot8 # Cognitive dissonance
+
+# This code will arrange all plots into one single file
+ggpubr::ggarrange(s1avplot1,	s1avplot2,	s1avplot3,	s1avplot4,	
+s1avplot5,	s1avplot6,	s1avplot7,	s1avplot8, ncol = 4, nrow = 2)
